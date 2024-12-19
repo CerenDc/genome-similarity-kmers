@@ -84,7 +84,7 @@ pip install biopython matplotlib
 
 1. **Clone the repository**:
    ```
-   git clone https://github.com/your-username/Comparative-Analysis-SARS-COV2-SARS-TOR2.git
+   git clone https://github.com/CerenDc/Comparative-Analysis-SARS-COV2-SARS-TOR2.git
    ```
 
 2. **Run the script to perform the analysis**:
