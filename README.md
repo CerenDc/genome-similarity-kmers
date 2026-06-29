@@ -1,95 +1,253 @@
-# Comparative Analysis of SARS-COV2 and SARS-TOR2 Genomes Using K-mer Based Metrics #genome-comparison-sars-cov2-sars-tor2
- 
-## Overview
+# Genome Similarity Analysis Using K-mer Based Metrics
 
-This project involves a comparative analysis of the SARS-COV2 and SARS-TOR2 genomes using k-mer based metrics, including the Jaccard index and Mash distance. The analysis helps in understanding the genomic similarities and differences between these two viruses by calculating pairwise distances between their k-mer sets.
+> Comparative analysis of SARS-CoV-2 and SARS-TOR2 genomes using **k-mer decomposition**, **Jaccard similarity**, and **Mash distance**.
 
-## Table of Contents
+![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)
+![BioPython](https://img.shields.io/badge/BioPython-Latest-green)
+![License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-- [Introduction](#introduction)
-- [Methodology](#methodology)
-  - [Indexing k-mers](#indexing-k-mers)
-  - [Computing the Jaccard Index](#computing-the-jaccard-index)
-  - [Computing Mash Distance](#computing-mash-distance)
-  - [Comparison](#comparison)
-- [Results](#results)
-- [Conclusion](#conclusion)
-- [Discussion](#discussion)
-- [Dependencies](#dependencies)
-- [Usage](#usage)
+---
 
-## Introduction
+## Project Overview
 
-This project compares the genomes of SARS-COV2 and SARS-TOR2 using two main k-mer based metrics: the Jaccard index and Mash distance. The analysis uses Python and several libraries for genomic sequence processing and distance calculations.
+Genome comparison is a fundamental task in computational biology. Traditional sequence alignment algorithms provide accurate results but can become computationally expensive when comparing large genomic datasets.
+
+This project explores an **alignment-free approach** based on **k-mer decomposition** to evaluate genomic similarity between **SARS-CoV-2** and **SARS-TOR2**.
+
+The comparison relies on two widely used similarity metrics:
+
+- **Jaccard Similarity**
+- **Mash Distance**
+
+Different **k-mer sizes** and **window shifts** are evaluated to study their influence on similarity measurements.
+
+---
+
+## Objectives
+
+The project aims to:
+
+- Extract unique k-mers from genomic sequences
+- Compare genomes using set-based similarity metrics
+- Evaluate the impact of different k-mer sizes
+- Study the effect of extraction window shifts
+- Visualize genomic similarity through graphical analysis
+
+---
+
+## Dataset
+
+Two complete viral genomes are compared:
+
+- SARS-CoV-2
+- SARS-TOR2
+
+Sequences are provided in FASTA format.
+
+```
+data/
+│
+├── SARS_COV2.fna
+└── SARS_TOR2.fna
+```
+
+---
 
 ## Methodology
 
-### Indexing k-mers
-The first step is to index the k-mers from both genomes. A k-mer is a substring of length `k` extracted from the genome sequence. We use a Python function to extract all k-mers, storing them in a dictionary to ensure all k-mers are unique.
+### 1. K-mer Extraction
 
-### Computing the Jaccard Index
-The Jaccard index is calculated to measure the similarity between two sets of k-mers. The formula for the Jaccard index is:
+Each genome is decomposed into overlapping substrings of length **k**.
+
+Example for:
 
 ```
-J(A, B) = |A ∩ B| / |A ∪ B|
+Genome : ACTGATC
+
+k = 3
 ```
+
+Generated k-mers:
+
+```
+ACT
+CTG
+TGA
+GAT
+ATC
+```
+
+Different values of **k** are evaluated:
+
+```
+7
+11
+21
+31
+41
+51
+61
+71
+81
+91
+101
+111
+121
+```
+
+---
+
+### 2. Jaccard Similarity
+
+The similarity between both genomes is computed using the Jaccard Index:
+
+\[
+J(A,B)=\frac{|A\cap B|}{|A\cup B|}
+\]
 
 Where:
-- `A` and `B` are the sets of k-mers extracted from the two genomes.
-- The function `jaccard_similarity` computes this index for each combination of k-mer sizes and shifts.
 
-### Computing Mash Distance
-Mash distance is derived from the Jaccard index. It quantifies the genomic distance between two sets of k-mers. If the Jaccard index is zero, the Mash distance is set to infinity. Otherwise, it is computed as:
+- A = k-mers from SARS-CoV-2
+- B = k-mers from SARS-TOR2
+
+Values close to **1** indicate highly similar genomes.
+
+---
+
+### 3. Mash Distance
+
+Mash distance is derived from the Jaccard similarity and estimates genomic distance.
+
+Lower values indicate genetically similar genomes.
+
+---
+
+### 4. Parameter Evaluation
+
+The analysis compares:
+
+- 13 k-mer sizes
+- 2 shift values
+
+This allows evaluation of how parameter selection influences similarity estimation.
+
+---
+
+## Project Structure
 
 ```
-Mash Distance = -log(1 - J(A, B))
+genome-similarity-kmers/
+
+│
+├── data/
+│   ├── SARS_COV2.fna
+│   └── SARS_TOR2.fna
+│
+├── src/
+│   ├── kmers.py
+│   ├── metrics.py
+│   ├── comparison.py
+│   └── plots.py
+│
+├── results/
+│
+├── notebooks/
+│   └── Genome_Comparison.ipynb
+│
+├── figures/
+│
+├── README.md
+│
+└── requirements.txt
 ```
 
-### Comparison
-We perform comparisons using different values of `k` (k-mer sizes) and shift values (how much to slide the window when extracting k-mers). The results are stored and visualized to observe how these parameters affect the similarity measurements.
+---
+
+## Technologies
+
+- Python
+- BioPython
+- Matplotlib
+- Math
+
+---
 
 ## Results
 
-The results provide a detailed table of Jaccard indices and Mash distances for various combinations of k and shift. Key observations include:
+The experiments show that:
 
-- Mash distance at k=7 is lower, indicating high similarity between genomes.
-- Mash distance becomes infinite for k=111 and k=121 with shift 2, where the genomes are highly dissimilar.
+- Smaller k values generate higher similarity scores because shorter patterns are more frequently shared.
+- Larger k values capture more specific genomic signatures.
+- Window shift influences the density of extracted k-mers.
+- Some large k values produce a Jaccard similarity of zero, resulting in an infinite Mash distance.
 
-### Visualization
-A graph is provided that plots Mash distances for both shift values against various k values, highlighting the effects of the k-mer size and shift on similarity.
+Overall, the analysis highlights the importance of parameter selection when using alignment-free genomic comparison methods.
 
-## Conclusion
+---
 
-Our findings show that shorter k-mers result in greater genomic similarity, while longer k-mers provide more nuanced differences. The shift parameter also plays a crucial role in determining the density of k-mers and the resulting similarity measurements.
+## Example Output
 
-## Discussion
+| k | Shift | Jaccard | Mash Distance |
+|---|-------|----------|---------------|
+| 7 | 1 | 0.693 | 0.029 |
+| 11 | 1 | 0.093 | 0.164 |
+| 51 | 1 | 0.003 | 0.098 |
+| 111 | 2 | 0.000 | ∞ |
 
-Future work could involve comparing these results with pairwise sequence alignments performed using algorithms like Needleman-Wunsch on the JobDispatcher platform. This would provide further validation and highlight the strengths and weaknesses of the k-mer based methods versus traditional sequence alignment approaches.
+---
 
-## Dependencies
+## Visualization
 
-This project requires the following Python libraries:
+The project generates graphs illustrating:
 
-- **BioPython**: For genomic sequence handling.
-- **Matplotlib**: For visualizations.
-- **Math**: For mathematical computations.
+- Jaccard Similarity versus k
+- Mash Distance versus k
 
-To install the required dependencies, run:
+These visualizations facilitate interpretation of the influence of algorithm parameters.
 
-```
-pip install biopython matplotlib
-```
+---
 
-## Usage
+## Skills Demonstrated
 
-1. **Clone the repository**:
-   ```
-   git clone https://github.com/CerenDc/Comparative-Analysis-SARS-COV2-SARS-TOR2.git
-   ```
+- Bioinformatics
+- Computational Genomics
+- Alignment-free sequence comparison
+- K-mer analysis
+- Scientific Python
+- Data visualization
+- Algorithm implementation
+- BioPython
 
-2. **Run the script to perform the analysis**:
-   ```
-   python genome_comparison.py
-   ```
+---
 
-3. **View the results** in the console or as output files (e.g., graphs).
+## Limitations
+
+This project focuses on alignment-free comparison using only two viral genomes.
+
+Future work could include:
+
+- Comparison with Needleman-Wunsch alignments
+- Comparison with BLAST
+- Benchmarking against the Mash software
+- Larger viral genome datasets
+- Parallel implementation for large-scale genomic analysis
+
+---
+
+## References
+
+- Ondov et al., Mash: Fast genome and metagenome distance estimation using MinHash.
+- BioPython Documentation
+- Stanford Bioinformatics Resources
+
+---
+
+## Author
+
+**Ceren Dinc**
+
+Master's Degree in Data Management in Biosciences
+
+Passionate about Bioinformatics, Data Science, Machine Learning and AI Engineering.
+
+GitHub: https://github.com/CerenDc
